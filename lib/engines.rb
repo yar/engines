@@ -143,9 +143,8 @@ module Engines
       source_dirs = source_files.select { |d| File.directory?(d) }
       source_files -= source_dirs
       
-      unless source_files.empty?
-        base_target_dir = File.join(destination, File.dirname(source_files.first))
-        FileUtils.mkdir_p(base_target_dir)
+      unless File.exist?(destination) || (source_files.empty? && source_dirs.empty?)
+        FileUtils.mkdir_p(destination)
       end
       
       source_dirs.each do |dir|
