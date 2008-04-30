@@ -23,7 +23,7 @@ class AssetsTest < Test::Unit::TestCase
     assert File.exist?(File.join(Engines.public_directory, 'test_assets', 'subfolder'))
     assert File.exist?(File.join(Engines.public_directory, 'test_assets', 'subfolder', 'file_in_subfolder.txt'))
   end
-  
+
   def test_public_files_have_been_copied_from_test_assets_with_assets_dir_plugin
     Engines::Assets.mirror_files_for Engines.plugins[:test_assets_with_assets_directory]
 
@@ -44,5 +44,10 @@ class AssetsTest < Test::Unit::TestCase
     Engines::Assets.mirror_files_for Engines.plugins[:alpha_plugin]
     
     assert !File.exist?(File.join(Engines.public_directory, 'alpha_plugin'))
+  end
+
+  def test_no_bogus_entries_created_under_public_directory
+    copied_directory = File.join(Engines.public_directory, 'test_assets')
+    assert_equal %w{. .. file.txt subfolder}, Dir.entries(copied_directory).sort
   end
 end
