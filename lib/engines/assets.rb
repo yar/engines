@@ -27,7 +27,7 @@ should edit the files within the <plugin_name>/assets/ directory itself.}
         return if plugin.public_directory.nil?
         begin 
           Engines.logger.debug "Attempting to copy plugin assets from '#{plugin.public_directory}' to '#{Engines.public_directory}'"
-          Engines.mirror_files_from(plugin.public_directory, File.join(Engines.public_directory, plugin.name))      
+          Engines.mirror_by_symlinking(plugin.public_directory, File.join(Engines.public_directory, plugin.name))      
         rescue Exception => e
           Engines.logger.warn "WARNING: Couldn't create the public file structure for plugin '#{plugin.name}'; Error follows:"
           Engines.logger.warn e

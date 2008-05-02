@@ -169,5 +169,12 @@ module Engines
         end
       end  
     end   
+    
+    def mirror_by_symlinking(source, destination)
+      FileUtils.mkdir_p(File.dirname(destination))
+      logger.warn "symlinking #{source} into #{destination}"
+      return unless File.directory?(source)
+      system "ln -nsf #{source} #{destination}"
+    end
   end  
 end
