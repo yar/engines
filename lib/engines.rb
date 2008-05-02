@@ -168,13 +168,27 @@ module Engines
           raise "Could not copy #{file} to #{target}: \n" + e 
         end
       end  
-    end   
+    end
     
-    def mirror_by_symlinking(source, destination)
-      FileUtils.mkdir_p(File.dirname(destination))
-      logger.warn "symlinking #{source} into #{destination}"
-      return unless File.directory?(source)
-      system "ln -nsf #{source} #{destination}"
+    # Create a symbolical link from (+source+) to (+destination+), falling back to recursive 
+    # copying on non-supporting platforms
+    def symlink_or_mirror(source, destination)
+      parent_directory = File.dirname(destination)
+      unless File.exist?(parent_directory)
+        FileUtils.mkdir_p(parent_directory)
+      end
+      if File.exist?(destination)
+        if File.symlink?(destination)
+          File.delete(destination)
+          File.symlink(source, destination)
+        else
+          mirror_files_from(source, destination)
+        end
+      else
+        unless File.symlink(source, destination) # returns nil on non-supporting platforms
+          mirror_files_from(source, destination)
+        end
+      end
     end
   end  
 end
